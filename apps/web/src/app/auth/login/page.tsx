@@ -104,7 +104,7 @@ export default function LoginPage() {
       </div>
 
       <div className="grid gap-2.5 mlandscape:grid-cols-2">
-        <button type="button" onClick={handleGoogle} className="btn-ghost flex h-12 items-center justify-center gap-2 rounded-xl text-[15px] font-semibold mlandscape:h-11">
+        <button type="button" onClick={handleGoogle} data-testid="google-login-button" className="btn-ghost flex h-12 items-center justify-center gap-2 rounded-xl text-[15px] font-semibold mlandscape:h-11">
           <GoogleMark />
           {t("auth_google")}
         </button>

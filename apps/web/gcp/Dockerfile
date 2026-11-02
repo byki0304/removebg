@@ -1,7 +1,7 @@
 # SpriteCut AI web (Next.js standalone) for Cloud Run.
 # Build from the repo root:
 #   docker build -f apps/web/gcp/Dockerfile \
-#     --build-arg NEXT_PUBLIC_SUPABASE_URL=... --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=... \
+#     --build-arg NEXT_PUBLIC_SUPABASE_URL=... --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=... \
 #     --build-arg NEXT_PUBLIC_SITE_URL=https://your-domain -t spritecut-web .
 # Runtime secrets (Cloud Run env / Secret Manager): SUPABASE_SERVICE_ROLE_KEY, AI_ENGINE_URL.
 
@@ -17,10 +17,10 @@ COPY packages/shared packages/shared
 COPY apps/web apps/web
 
 ARG NEXT_PUBLIC_SUPABASE_URL
-ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ARG NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL \
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY \
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
     NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
     NEXT_PUBLIC_UI_PREVIEW=0 \
     NEXT_STANDALONE=1 \

@@ -1,4 +1,4 @@
-# SpriteCut AI (removebg)
+﻿# SpriteCut AI (removebg)
 
 게임 스프라이트용 초정밀 배경 제거 앱. 사양서: `06_Cursor_Project_Master_Prompt_final_removebg.md`
 
@@ -27,7 +27,7 @@ npm run dev                                       # http://localhost:3000
    - **Anonymous sign-ins: Enabled** (게스트)
    - Google provider Enabled
    - URL Configuration > Redirect URLs: `https://<도메인>/auth/callback`, `http://localhost:3000/auth/callback`, `spritecut://auth/callback`
-3. `apps/web/.env.local` 에 키 입력: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`(서버 전용), `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_UI_PREVIEW=0`
+3. `apps/web/.env.local` 에 키 입력: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`(서버 전용), `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_UI_PREVIEW=0`
 
 게스트 데이터는 pg_cron이 72시간 후 자동 삭제하고, 이메일·휴대폰·Google 회원 데이터는 영구 보관됩니다.
 
@@ -81,6 +81,6 @@ npm run e2e            # Playwright: 흐름 + 10개 해상도 × 11개 화면 ×
 
 ## 7. GCP 배포
 
-- 웹: `docker build -f apps/web/gcp/Dockerfile --build-arg NEXT_PUBLIC_SUPABASE_URL=... --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=... --build-arg NEXT_PUBLIC_SITE_URL=... .` → Cloud Run (런타임 env: `SUPABASE_SERVICE_ROLE_KEY`, `AI_ENGINE_URL`)
+- 웹: `docker build -f apps/web/gcp/Dockerfile --build-arg NEXT_PUBLIC_SUPABASE_URL=... --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=... --build-arg NEXT_PUBLIC_SITE_URL=... .` → Cloud Run (런타임 env: `SUPABASE_SERVICE_ROLE_KEY`, `AI_ENGINE_URL`)
 - AI 엔진: `docker build -t spritecut-engine apps/desktop/python_sidecar` → Cloud Run GPU (L4/T4)
 - GCS 버킷 수명주기: `apps/web/gcp/lifecycle.json` (3일 후 삭제)

@@ -22,3 +22,5 @@ apps/desktop/release/
 .next-desktop/
 .pytest_cache/
 packages/intro-video/out/
+
+*.tsbuildinfo
