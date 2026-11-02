@@ -1,0 +1,9 @@
+# Python 3.11–3.13 recommended (onnxruntime wheels).
+fastapi>=0.115
+uvicorn>=0.32
+python-multipart>=0.0.18
+numpy>=2.0
+Pillow>=11.0
+rembg>=2.0.66
+onnxruntime>=1.20 ; platform_system != "Linux"
+# Linux / Cloud Run GPU: install onnxruntime-gpu instead (see Dockerfile).

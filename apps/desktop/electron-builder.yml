@@ -1,0 +1,23 @@
+appId: ai.spritecut.desktop
+productName: SpriteCut AI
+electronVersion: 45.2.1
+directories:
+  output: release
+files:
+  - dist/**/*
+  - package.json
+afterPack: scripts/after-pack.cjs
+extraResources:
+  - from: python_sidecar/dist/spritecut-sidecar
+    to: sidecar
+    filter: ["**/*"]
+protocols:
+  - name: SpriteCut AI
+    schemes: [spritecut]
+win:
+  target: nsis
+mac:
+  target: dmg
+  category: public.app-category.graphics-design
+linux:
+  target: AppImage

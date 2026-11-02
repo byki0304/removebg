@@ -1,0 +1,16 @@
+**/node_modules
+**/.next
+**/.next-e2e
+**/.next-desktop
+**/.env
+**/.env.*
+!**/.env.example
+**/test-results
+**/__screenshots__
+**/.venv
+**/models
+**/__pycache__
+apps/desktop/bundle
+apps/desktop/release
+apps/desktop/dist
+packages/intro-video/out

@@ -1,0 +1,29 @@
+{
+  "name": "removebg-spritecut",
+  "private": true,
+  "version": "3.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --filter=@spritecut/web",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "e2e": "npm run e2e -w @spritecut/web",
+    "render:intro": "npm run render -w @spritecut/intro-video",
+    "desktop": "npm run dev -w @spritecut/desktop",
+    "desktop:dist": "npm run dist -w @spritecut/desktop"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0",
+    "typescript": "^5.8.0"
+  },
+  "packageManager": "npm@11.19.0",
+  "allowScripts": {
+    "sharp@0.34.5": true,
+    "electron@45.2.1": true,
+    "esbuild@0.28.1": true
+  }
+}

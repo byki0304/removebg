@@ -1,0 +1,22 @@
+{
+  "name": "@spritecut/desktop",
+  "productName": "SpriteCut AI",
+  "version": "3.0.0",
+  "private": true,
+  "description": "SpriteCut AI desktop app (Electron + local Python AI sidecar)",
+  "author": "SpriteCut AI",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsc -p tsconfig.json && electron .",
+    "bundle:web": "node scripts/bundle-web.mjs",
+    "dist": "npm run build && npm run bundle:web && electron-builder --publish never"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "electron": "45.2.1",
+    "electron-builder": "^26.18.0",
+    "typescript": "^5.8.0"
+  }
+}

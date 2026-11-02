@@ -1,0 +1,21 @@
+{
+  "name": "@spritecut/intro-video",
+  "version": "3.0.0",
+  "private": true,
+  "description": "6-second SpriteCut AI intro, rendered from code with Remotion",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "node scripts/render.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.540",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "remotion": "4.0.540"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "typescript": "^5.8.0"
+  }
+}
