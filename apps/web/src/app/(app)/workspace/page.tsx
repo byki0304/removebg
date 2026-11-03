@@ -8,14 +8,12 @@ import { OptionsPanel } from "@/components/studio/OptionsPanel";
 import { prepareUpload, UploadTooLargeError } from "@/lib/imagePipeline/prepareUpload";
 import { recordJob } from "@/lib/jobService";
 import { useLocale } from "@/providers/LocaleProvider";
-import { useSession } from "@/providers/SessionProvider";
 import { parseGeometry, useStudioStore } from "@/store/studioStore";
 
 const CONCURRENCY = 2;
 
 export default function WorkspacePage() {
   const { t } = useLocale();
-  const { profile } = useSession();
   const { items, addFiles, updateItem, selectedId } = useStudioStore();
   const [processing, setProcessing] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
@@ -53,11 +51,11 @@ export default function WorkspacePage() {
             geometry: parseGeometry(res.headers),
             downscaled: upload.resized || res.headers.get("X-Downscaled") === "1",
           });
-          void recordJob(profile, item.name, options, true);
+          void recordJob(item.name, options, true);
         } catch (error) {
           if (error instanceof UploadTooLargeError) pushError(t("err_file_size", { name: item.name }));
           updateItem(item.id, { status: "failed" });
-          void recordJob(profile, item.name, options, false);
+          void recordJob(item.name, options, false);
         }
       }
     };

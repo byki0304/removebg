@@ -1,18 +1,25 @@
 "use client";
 
-import type { JobOptions, JobRecord, Profile } from "@removebg/shared";
+import type { JobOptions, JobRecord } from "@removebg/shared";
 import { getSupabaseBrowser } from "./supabase/client";
 
-export async function recordJob(profile: Profile | null, fileName: string, options: JobOptions, succeeded: boolean) {
+/** Resolves the user from the live session (not the possibly still-loading profile) so no job is dropped. */
+export async function recordJob(fileName: string, options: JobOptions, succeeded: boolean) {
   const supabase = getSupabaseBrowser();
-  if (!supabase || !profile) return;
-  await supabase.from("jobs").insert({
-    user_id: profile.id,
-    is_guest: profile.account_type === "guest",
+  if (!supabase) return;
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const user = session?.user;
+  if (!user) return;
+  const { error } = await supabase.from("jobs").insert({
+    user_id: user.id,
+    is_guest: user.is_anonymous === true,
     original_file_name: fileName,
     status: succeeded ? "COMPLETED" : "FAILED",
     options,
   });
+  if (error) console.error("[jobs] insert failed:", error.message);
 }
 
 export async function fetchJobs(): Promise<JobRecord[]> {
