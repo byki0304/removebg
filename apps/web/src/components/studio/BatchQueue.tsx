@@ -104,6 +104,7 @@ export function BatchQueue({ processing, onStart }: { processing: boolean; onSta
                 <StatusIcon status={item.status} />
                 {t(STATUS_KEYS[item.status])}
                 {item.gifFrames && item.gifFrames > 1 ? " · GIF → Frame 0" : ""}
+                {item.downscaled ? ` · ${t("ws_downscaled")}` : ""}
               </span>
             </button>
             {item.status === "completed" && item.resultBlob && (

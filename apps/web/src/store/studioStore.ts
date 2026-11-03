@@ -17,6 +17,8 @@ export interface QueueItem {
   engine?: "ai" | "basic";
   gifFrames?: number | null;
   geometry?: ResultGeometry;
+  /** Shrunk in the browser or on the server to fit the hosted body-size limit. */
+  downscaled?: boolean;
   errorKey?: string;
   addedAt: number;
 }

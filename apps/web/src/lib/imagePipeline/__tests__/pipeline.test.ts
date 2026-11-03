@@ -76,6 +76,27 @@ describe("processImage", () => {
     expect([result.width, result.height]).toEqual([30, 30]);
     expect(result.contentType).toBe("image/webp");
   });
+
+  it("downscales the result and its geometry to fit maxOutputBytes", async () => {
+    const size = 1024;
+    const noise = new Uint8Array(size * size * 4);
+    for (let i = 0; i < noise.length; i++) noise[i] = (i * 2654435761) >>> 24;
+    for (let i = 3; i < noise.length; i += 4) noise[i] = 255;
+    const png = await sharp(Buffer.from(noise), { raw: { width: size, height: size, channels: 4 } }).png().toBuffer();
+    const options = { autoTrim: false, padding: 0, defringing: false, outputFormat: "png", aiMode: "ultra" } as const;
+
+    const full = await processImage(png, options);
+    const limit = Math.floor(full.buffer.length / 4);
+    const result = await processImage(png, options, { maxOutputBytes: limit });
+
+    expect(full.downscaled).toBe(false);
+    expect(result.downscaled).toBe(true);
+    expect(result.buffer.length).toBeLessThanOrEqual(limit);
+    const meta = await sharp(result.buffer).metadata();
+    expect([meta.width, meta.height]).toEqual([result.width, result.height]);
+    expect(result.sourceWidth).toBe(result.width);
+    expect(result.width).toBeLessThan(size);
+  });
 });
 
 describe("layout modes", () => {

@@ -15,6 +15,8 @@ import {
 
 export type EngineName = "ai" | "basic";
 
+export class OutputTooLargeError extends Error {}
+
 export interface ProcessResult {
   buffer: Buffer;
   contentType: string;
@@ -28,9 +30,17 @@ export interface ProcessResult {
   /** Position of the result's (0,0) in source coordinates; negative when padding was added. */
   offsetX: number;
   offsetY: number;
+  /** True when the result was shrunk to fit `maxOutputBytes`; geometry is reported at the shrunk scale. */
+  downscaled: boolean;
+}
+
+export interface ProcessLimits {
+  /** Hosted platforms cap response bodies; larger lossless results are downscaled until they fit. */
+  maxOutputBytes?: number;
 }
 
 const AI_ENGINE_TIMEOUT_MS = 90_000;
+const MAX_DOWNSCALE_ATTEMPTS = 6;
 
 async function decodeRgba(input: Buffer): Promise<RgbaImage> {
   const { data, info } = await sharp(input, { page: 0, animated: false })
@@ -68,7 +78,15 @@ async function requestAiEngine(png: Buffer, options: JobOptions): Promise<RgbaIm
   }
 }
 
-export async function processImage(input: Buffer, options: JobOptions): Promise<ProcessResult> {
+function encodeOutput(image: RgbaImage, options: JobOptions, size?: { width: number; height: number }): Promise<Buffer> {
+  let pipeline = sharp(Buffer.from(image.data), { raw: { width: image.width, height: image.height, channels: 4 } });
+  if (size) pipeline = pipeline.resize(size.width, size.height, { kernel: options.aiMode === "pixel" ? "nearest" : "lanczos3" });
+  return options.outputFormat === "webp"
+    ? pipeline.webp({ lossless: true }).toBuffer()
+    : pipeline.png({ compressionLevel: 9 }).toBuffer();
+}
+
+export async function processImage(input: Buffer, options: JobOptions, limits: ProcessLimits = {}): Promise<ProcessResult> {
   const gifFrames = isGifBuffer(input) ? countGifFrames(input) : null;
   const source = await decodeRgba(input);
 
@@ -112,21 +130,30 @@ export async function processImage(input: Buffer, options: JobOptions): Promise<
     }
   }
 
-  const buffer =
-    options.outputFormat === "webp"
-      ? await pipeline.webp({ lossless: true }).toBuffer()
-      : await pipeline.png({ compressionLevel: 9 }).toBuffer();
+  const { data, info } = await pipeline.raw().toBuffer({ resolveWithObject: true });
+  const trimmed: RgbaImage = { data: new Uint8Array(data.buffer, data.byteOffset, data.byteLength), width: info.width, height: info.height };
+  let buffer = await encodeOutput(trimmed, options);
+  let scale = 1;
+
+  const maxBytes = limits.maxOutputBytes;
+  for (let attempt = 0; maxBytes && buffer.length > maxBytes && attempt < MAX_DOWNSCALE_ATTEMPTS; attempt++) {
+    scale *= Math.min(0.9, Math.max(0.5, Math.sqrt(maxBytes / buffer.length) * 0.95));
+    const size = { width: Math.max(1, Math.round(width * scale)), height: Math.max(1, Math.round(height * scale)) };
+    buffer = await encodeOutput(trimmed, options, size);
+  }
+  if (maxBytes && buffer.length > maxBytes) throw new OutputTooLargeError();
 
   return {
     buffer,
     contentType: options.outputFormat === "webp" ? "image/webp" : "image/png",
     engine,
     gifFrames,
-    width,
-    height,
-    sourceWidth: source.width,
-    sourceHeight: source.height,
-    offsetX,
-    offsetY,
+    width: Math.max(1, Math.round(width * scale)),
+    height: Math.max(1, Math.round(height * scale)),
+    sourceWidth: Math.round(source.width * scale),
+    sourceHeight: Math.round(source.height * scale),
+    offsetX: Math.round(offsetX * scale),
+    offsetY: Math.round(offsetY * scale),
+    downscaled: scale < 1,
   };
 }

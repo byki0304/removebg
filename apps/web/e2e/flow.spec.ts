@@ -71,3 +71,38 @@ test("background removal runs end-to-end with the built-in engine", async ({ pag
   await page.getByTestId("start-processing").click();
   await expect(page.getByTestId("batch-queue").getByText(/완료|Done/)).toBeVisible({ timeout: 20_000 });
 });
+
+test("oversized images are shrunk in the browser to fit the hosted upload limit", async ({ page }) => {
+  await page.addInitScript(() => sessionStorage.setItem("introPlayed", "1"));
+  await page.goto("/workspace");
+
+  const size = 2000;
+  const noise = Buffer.alloc(size * size * 4);
+  let seed = 1;
+  for (let i = 0; i < noise.length; i++) {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    noise[i] = seed >>> 24;
+  }
+  for (let i = 3; i < noise.length; i += 4) noise[i] = 200;
+  const png = await sharp(noise, { raw: { width: size, height: size, channels: 4 } }).png().toBuffer();
+  expect(png.length).toBeGreaterThan(4.5 * 1024 * 1024);
+
+  let uploadBytes = 0;
+  let uploadName = "";
+  const tiny = await sharp({ create: { width: 8, height: 8, channels: 4, background: "#00000000" } }).png().toBuffer();
+  await page.route("**/api/remove-bg", async (route) => {
+    const body = route.request().postDataBuffer() ?? Buffer.alloc(0);
+    uploadBytes = body.length;
+    uploadName = /filename="([^"]+)"/.exec(body.subarray(0, 2048).toString("latin1"))?.[1] ?? "";
+    await route.fulfill({ status: 200, contentType: "image/png", body: tiny, headers: { "X-Engine": "basic" } });
+  });
+
+  await page.locator('input[type="file"]').setInputFiles({ name: "huge.png", mimeType: "image/png", buffer: png });
+  await page.getByTestId("start-processing").click();
+  const queue = page.getByTestId("batch-queue");
+  await expect(queue.getByText(/\uC644\uB8CC|Done/)).toBeVisible({ timeout: 60_000 });
+  await expect(queue.getByText(/\uC6A9\uB7C9 \uC81C\uD55C\uC73C\uB85C \uCD95\uC18C\uB428/)).toBeVisible();
+  expect(uploadBytes).toBeGreaterThan(0);
+  expect(uploadBytes).toBeLessThan(4.5 * 1024 * 1024);
+  expect(uploadName).toMatch(/^huge\.(png|webp)$/);
+});

@@ -47,6 +47,8 @@ export const MAX_BATCH_FILES = 30;
 export const MAX_BATCH_BYTES = 200 * 1024 * 1024;
 export const MAX_DIMENSION = 4096;
 export const FILE_TTL_HOURS = 72;
+/** Hosted (Vercel) functions reject request/response bodies over 4.5 MB; this leaves room for multipart overhead. */
+export const HOSTED_BODY_BUDGET_BYTES = 4 * 1024 * 1024;
 
 export function isAcceptedFileName(fileName: string): boolean {
   const lower = fileName.toLowerCase();

@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 import { BatchQueue } from "@/components/studio/BatchQueue";
 import { DropZone } from "@/components/studio/DropZone";
 import { OptionsPanel } from "@/components/studio/OptionsPanel";
+import { prepareUpload, UploadTooLargeError } from "@/lib/imagePipeline/prepareUpload";
 import { recordJob } from "@/lib/jobService";
 import { useLocale } from "@/providers/LocaleProvider";
 import { useSession } from "@/providers/SessionProvider";
@@ -31,11 +32,15 @@ export default function WorkspacePage() {
     const worker = async () => {
       for (let item = queue.shift(); item; item = queue.shift()) {
         updateItem(item.id, { status: "processing" });
-        const form = new FormData();
-        form.append("file", item.file);
-        form.append("options", JSON.stringify(options));
         try {
+          const upload = window.removebgDesktop
+            ? { file: item.file, resized: false }
+            : await prepareUpload(item.file, { pixelArt: options.aiMode === "pixel" });
+          const form = new FormData();
+          form.append("file", upload.file);
+          form.append("options", JSON.stringify(options));
           const res = await fetch("/api/remove-bg", { method: "POST", body: form });
+          if (res.status === 413) throw new UploadTooLargeError();
           if (!res.ok) throw new Error(String(res.status));
           const blob = await res.blob();
           const frames = res.headers.get("X-Gif-Frames");
@@ -46,9 +51,11 @@ export default function WorkspacePage() {
             engine: res.headers.get("X-Engine") === "ai" ? "ai" : "basic",
             gifFrames: frames ? Number(frames) : null,
             geometry: parseGeometry(res.headers),
+            downscaled: upload.resized || res.headers.get("X-Downscaled") === "1",
           });
           void recordJob(profile, item.name, options, true);
-        } catch {
+        } catch (error) {
+          if (error instanceof UploadTooLargeError) pushError(t("err_file_size", { name: item.name }));
           updateItem(item.id, { status: "failed" });
           void recordJob(profile, item.name, options, false);
         }

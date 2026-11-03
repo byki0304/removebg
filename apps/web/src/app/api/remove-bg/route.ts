@@ -1,7 +1,7 @@
-import { isAcceptedFileName, maxBytesFor, type JobOptions } from "@removebg/shared";
+import { HOSTED_BODY_BUDGET_BYTES, isAcceptedFileName, maxBytesFor, type JobOptions } from "@removebg/shared";
 import { NextResponse } from "next/server";
 import { apiError } from "@/lib/apiResponse";
-import { processImage } from "@/lib/imagePipeline/processImage";
+import { OutputTooLargeError, processImage } from "@/lib/imagePipeline/processImage";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -31,7 +31,9 @@ export async function POST(request: Request) {
   if (file.size > maxBytesFor(file.name)) return apiError(413, "err_file_size");
 
   try {
-    const result = await processImage(Buffer.from(await file.arrayBuffer()), parseOptions(form.get("options")));
+    const result = await processImage(Buffer.from(await file.arrayBuffer()), parseOptions(form.get("options")), {
+      maxOutputBytes: process.env.VERCEL ? HOSTED_BODY_BUDGET_BYTES : undefined,
+    });
     return new NextResponse(new Uint8Array(result.buffer), {
       status: 200,
       headers: {
@@ -42,9 +44,11 @@ export async function POST(request: Request) {
         "X-Result-Size": `${result.width}x${result.height}`,
         "X-Source-Size": `${result.sourceWidth}x${result.sourceHeight}`,
         "X-Trim-Offset": `${result.offsetX},${result.offsetY}`,
+        "X-Downscaled": result.downscaled ? "1" : "0",
       },
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof OutputTooLargeError) return apiError(413, "err_file_size");
     return apiError(500, "err_generic");
   }
 }
