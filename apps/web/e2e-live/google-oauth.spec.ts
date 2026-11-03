@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 const SUPABASE_URL = "https://nouwdwoxibvjquiusgej.supabase.co";
 const SUPABASE_CALLBACK = `${SUPABASE_URL}/auth/v1/callback`;
 
-test("Google button starts Supabase OAuth with PKCE and lands on Google sign-in", async ({ page, context }) => {
+test("Google button starts Supabase OAuth with PKCE and lands on Google sign-in", async ({ page, context, baseURL }) => {
   let authorizeUrl: URL | null = null;
   page.on("request", (req) => {
     if (req.url().startsWith(`${SUPABASE_URL}/auth/v1/authorize`)) authorizeUrl = new URL(req.url());
@@ -17,9 +17,9 @@ test("Google button starts Supabase OAuth with PKCE and lands on Google sign-in"
   expect(authorizeUrl, "Supabase /authorize was called").not.toBeNull();
   const authorize = authorizeUrl as unknown as URL;
   expect(authorize.searchParams.get("provider")).toBe("google");
-  expect(authorize.searchParams.get("redirect_to")).toBe("http://localhost:3000/auth/callback");
+  expect(authorize.searchParams.get("redirect_to")).toBe(`${baseURL}/auth/callback`);
   expect(authorize.searchParams.get("code_challenge_method")).toBe("s256");
-  const cookies = await context.cookies("http://localhost:3000");
+  const cookies = await context.cookies(baseURL!);
   expect(cookies.some((c) => c.name.endsWith("-auth-token-code-verifier")), "PKCE verifier cookie stored").toBe(true);
 
   // Google side: the OAuth client must accept Supabase's callback URL.
