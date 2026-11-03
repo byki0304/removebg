@@ -1,5 +1,5 @@
 export const DEFAULT_COUNTRY_CODE = "+82";
-export const MOBILE_AUTH_EMAIL_DOMAIN = "phone.spritecut.local";
+export const MOBILE_AUTH_EMAIL_DOMAIN = "phone.removebgai.local";
 
 export interface NormalizedMobile {
   countryCode: string;

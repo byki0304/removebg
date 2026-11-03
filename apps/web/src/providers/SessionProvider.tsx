@@ -1,7 +1,7 @@
 "use client";
 
 import type { User } from "@supabase/supabase-js";
-import type { Profile } from "@spritecut/shared";
+import type { Profile } from "@removebg/shared";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { isUiPreview } from "@/lib/env";
 import { getSupabaseBrowser } from "@/lib/supabase/client";

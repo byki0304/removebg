@@ -1,6 +1,6 @@
 "use client";
 
-import type { JobRecord, JobStatus, TranslationKey } from "@spritecut/shared";
+import type { JobRecord, JobStatus, TranslationKey } from "@removebg/shared";
 import { useEffect, useState } from "react";
 import { fetchJobs } from "@/lib/jobService";
 import { useLocale } from "@/providers/LocaleProvider";

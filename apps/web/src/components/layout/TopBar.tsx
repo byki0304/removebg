@@ -4,6 +4,7 @@ import { LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { logout } from "@/lib/authService";
 import { useLocale } from "@/providers/LocaleProvider";
 import { useSession } from "@/providers/SessionProvider";
@@ -47,8 +48,8 @@ export function TopBar() {
       >
         <div data-testid="top-bar-row-primary" className="flex min-w-0 items-center gap-3 mportrait:h-11">
           <HomeButton placement="bottom-start" />
-          <Link href="/menu" className="shrink-0 text-[17px] font-extrabold tracking-tight neon-text mlandscape:text-[15px]">
-            {t("app_logo")}
+          <Link href="/menu" className="shrink-0" aria-label={t("app_logo")}>
+            <BrandLogo size="sm" />
           </Link>
           <span className="truncate text-[14px] text-ink-dim mlandscape:text-[13px] desktop:max-[1359px]:hidden">· {t(titleKey)}</span>
         </div>

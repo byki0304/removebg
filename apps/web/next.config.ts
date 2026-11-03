@@ -6,7 +6,7 @@ const standalone = process.env.NEXT_STANDALONE === "1";
 
 const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
-  transpilePackages: ["@spritecut/shared"],
+  transpilePackages: ["@removebg/shared"],
   serverExternalPackages: ["sharp"],
   experimental: {
     serverActions: { bodySizeLimit: "60mb" },

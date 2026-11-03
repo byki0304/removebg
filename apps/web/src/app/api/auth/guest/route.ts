@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, FILE_TTL_HOURS, isLocale, isValidNickname, normalizeNickname } from "@spritecut/shared";
+import { DEFAULT_LOCALE, FILE_TTL_HOURS, isLocale, isValidNickname, normalizeNickname } from "@removebg/shared";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { apiError, apiOk } from "@/lib/apiResponse";
 import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";

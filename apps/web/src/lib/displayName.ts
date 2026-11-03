@@ -1,4 +1,4 @@
-import { formatMobileForDisplay, type Profile } from "@spritecut/shared";
+import { formatMobileForDisplay, type Profile } from "@removebg/shared";
 
 /** The ID shown to the user: email, formatted mobile number, or guest nickname. Never the internal auth email. */
 export function profileLoginId(profile: Profile | null): string {

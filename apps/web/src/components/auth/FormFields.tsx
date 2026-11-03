@@ -1,6 +1,6 @@
 "use client";
 
-import { DEFAULT_COUNTRY_CODE } from "@spritecut/shared";
+import { DEFAULT_COUNTRY_CODE } from "@removebg/shared";
 import { Eye, EyeOff } from "lucide-react";
 import { useId, useState, type InputHTMLAttributes } from "react";
 import { useLocale } from "@/providers/LocaleProvider";

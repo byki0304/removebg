@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { LanguagePills } from "@/components/layout/LanguagePills";
 import { hasActiveSession } from "@/lib/authService";
 import { hasPlayedIntro } from "@/lib/introState";
@@ -39,7 +40,9 @@ export default function LandingPage() {
           transition={{ duration: 0.5 }}
           className="flex flex-col items-center gap-3 text-center"
         >
-          <h1 className="text-[clamp(40px,8vmin,84px)] font-black leading-none tracking-tight neon-text">{t("app_logo")}</h1>
+          <h1>
+            <BrandLogo size="lg" />
+          </h1>
           <p className="max-w-[520px] text-[15px] text-ink-dim mlandscape:text-[14px]">{t("landing_tagline")}</p>
         </motion.div>
 

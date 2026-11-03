@@ -6,7 +6,7 @@ import {
   MAX_BATCH_FILES,
   isAcceptedFileName,
   maxBytesFor,
-} from "@spritecut/shared";
+} from "@removebg/shared";
 import { UploadCloud } from "lucide-react";
 import { useRef, useState, type DragEvent } from "react";
 import { useLocale } from "@/providers/LocaleProvider";

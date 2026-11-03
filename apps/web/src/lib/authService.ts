@@ -9,7 +9,7 @@ import {
   tryNormalizeMobile,
   type Locale,
   type TranslationKey,
-} from "@spritecut/shared";
+} from "@removebg/shared";
 import { getSupabaseBrowser } from "./supabase/client";
 
 export type AuthResult = { ok: true } | { ok: false; errorKey: TranslationKey };
@@ -94,7 +94,7 @@ export async function signUpWithMobile(
 export async function loginWithGoogle(): Promise<AuthResult> {
   const supabase = getSupabaseBrowser();
   if (!supabase) return fail("auth_backend_missing");
-  const desktop = window.spritecutDesktop;
+  const desktop = window.removebgDesktop;
   if (desktop) {
     // Google blocks OAuth inside embedded windows: use the system browser and return via deep link.
     const { data, error } = await supabase.auth.signInWithOAuth({

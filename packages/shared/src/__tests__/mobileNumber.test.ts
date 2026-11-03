@@ -34,7 +34,7 @@ describe("normalizeMobile", () => {
   });
 
   it("builds internal auth email and display format", () => {
-    expect(mobileToAuthEmail("+821012345678")).toBe("p821012345678@phone.spritecut.local");
+    expect(mobileToAuthEmail("+821012345678")).toBe("p821012345678@phone.removebgai.local");
     expect(formatMobileForDisplay("+82", "1012345678")).toBe("+82 10 1234 5678");
   });
 });

@@ -1,5 +1,5 @@
 # Cursor Agent 마스터 프로젝트 개발 지시서 (FINAL v3.0)
-> **프로젝트명:** removebg / SpriteCut AI Studio  
+> **프로젝트명:** removebg / RemoveBg AI  
 > **목적:** 이 지시서를 Cursor (Agent / Composer 모드)에 그대로 전달하여, `BizApp Detailed App Development Plan v2.0`, `BizApp Design Doc v2.0` 및 본 문서의 **App 구성(인증·화면흐름·다국어·반응형 HUD) 확정 요구사항**을 100% 반영한 전체 코드를 자동 구현한다.  
 > **작성일:** 2026-11-03  
 > **우선순위 규칙:** 본 문서와 이전 문서(01~05)가 충돌하면 **본 문서(06)가 최우선**이다.
@@ -20,7 +20,7 @@
 ## 1. System Role & Execution Goal
 
 **Role:** You are a Principal Software Architect and Lead AI Systems Engineer.  
-**Task:** Build the complete codebase for **'SpriteCut AI Studio' (removebg)**.
+**Task:** Build the complete codebase for **'RemoveBg AI' (removebg)**.
 
 **Dual-Target Architecture**
 - **Target A (Desktop Offline App):** Electron 33+ + React 19 renderer (shared UI) + Node.js `sharp` + Python FastAPI Sidecar (local GPU/CPU inference, $0 API cost).
@@ -43,7 +43,7 @@ Both targets share **the same UI package, i18n, auth flow, and layout system**.
 
 ### 2.2 Repository Structure
 ```text
-removebg-spritecut/
+removebgai/
 ├── apps/
 │   ├── desktop/
 │   │   ├── src/main/            # aiBridge.ts, sidecarLauncher.ts, deepLinkAuth.ts
@@ -187,7 +187,7 @@ graph TD
 - Auth > Providers > **Email: Enabled**, **Confirm email: OFF** (가입 즉시 로그인).
 - **Phone provider는 사용하지 않는다** (SMS 비용·OTP 회피).
 - **Anonymous sign-ins: Enabled** (게스트용).
-- Google provider Enabled (Web redirect: `/auth/callback`, Electron: `spritecut://auth/callback` deep link).
+- Google provider Enabled (Web redirect: `/auth/callback`, Electron: `removebgai://auth/callback` deep link).
 - 회원가입은 서버 Route Handler에서 `SUPABASE_SERVICE_ROLE_KEY`로 `auth.admin.createUser({ email, password, email_confirm: true })` 실행 후, 클라이언트가 `signInWithPassword`로 즉시 로그인한다. Service Role Key는 절대 클라이언트 번들에 포함하지 않는다.
 
 ### 4.3 휴대폰번호 입력 및 정규화 (`MobileNumberInput`, `lib/mobileNumber.ts`)
@@ -207,7 +207,7 @@ export function normalizeMobile(countryCodeRaw: string, numberRaw: string) {
 }
 
 export function mobileToAuthEmail(e164: string) {
-  return `p${e164.replace("+", "")}@phone.spritecut.local`; // internal only, never shown in UI
+  return `p${e164.replace("+", "")}@phone.removebgai.local`; // internal only, never shown in UI
 }
 
 export function formatMobileForDisplay(countryCode: string, national: string) {
@@ -252,7 +252,7 @@ export function formatMobileForDisplay(countryCode: string, national: string) {
 ### 5.2 TopBar (로그인 이후 모든 화면 공통)
 - **오른쪽 상단 가로 정렬 순서 (좌→우):** `[Ko|En|Ja] [마이페이지] [로그아웃]`
   - 언어 토글은 마이페이지·로그아웃 버튼 그룹의 바로 왼쪽에 위치하며, 마이페이지 버튼과 로그아웃 버튼은 가로로 나란히 배치된다.
-- 왼쪽: `HomeButton` + SpriteCut AI 로고 + 현재 화면 제목.
+- 왼쪽: `HomeButton` + RemoveBg AI 로고 + 현재 화면 제목.
 - `/mypage` 화면에서는 [마이페이지] 버튼을 active 상태로 표시.
 
 ### 5.3 LanguagePills (첫화면 전용)
@@ -365,7 +365,7 @@ $$);
   - 0.0–1.0s: 옵시디언(#0B0C10) 암전 → 중앙에 네온 시안 스캔 라인이 가로로 번쩍임.
   - 1.0–2.5s: 실루엣 캐릭터 스프라이트가 체커보드 위에 등장, 흰 배경이 네온 커터 라인으로 잘려 나가며 파티클로 흩어짐 (배경 제거 은유).
   - 2.5–4.0s: 마젠타(#FF0055)·퍼플(#9D00FF) 글로우 펄스, 투명 PNG가 초원/던전 타일 위로 착지.
-  - 4.0–5.5s: 로고 "SpriteCut AI" 글리치 등장 + 서브타이틀 (언어 무관 영문 "Precision AI Background Removal").
+  - 4.0–5.5s: 로고 "RemoveBg AI" 글리치 등장 + 서브타이틀 (언어 무관 영문 "Precision AI Background Removal").
   - 5.5–6.0s: 페이드아웃 → 첫화면 배경과 동일 컬러로 자연스럽게 연결.
 - 사운드: 짧은 신스 스윕(저작권 프리 자체 합성, Web Audio/Tone.js로 생성 후 믹스) — 기본 음소거.
 - `npm run render:intro` 스크립트로 `apps/web/public/intro/`에 출력. Electron은 동일 파일을 번들.
@@ -492,7 +492,7 @@ from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import Response
 from PIL import Image
 
-app = FastAPI(title="SpriteCut AI Engine")
+app = FastAPI(title="RemoveBg AI Engine")
 
 def apply_color_decontamination(img_rgba: np.ndarray, alpha: np.ndarray) -> np.ndarray:
     b, g, r, a = cv2.split(img_rgba)
@@ -589,7 +589,7 @@ export async function processImagePipeline(
 ```typescript
 export const translations = {
   ko: {
-    app_title: "SpriteCut AI Studio - 초고정밀 AI 배경 제거",
+    app_title: "RemoveBg AI - 초고정밀 AI 배경 제거",
     intro_skip: "건너뛰기", intro_sound_on: "소리 켜기", intro_sound_off: "소리 끄기",
     landing_start: "시작하기",
     nav_go_home: "처음으로 돌아가기",
@@ -621,7 +621,7 @@ export const translations = {
     simulator_title: "인게임 배경 시뮬레이터", history_expired: "파일 만료됨",
   },
   en: {
-    app_title: "SpriteCut AI Studio - Precision AI Background Remover",
+    app_title: "RemoveBg AI - Precision AI Background Remover",
     intro_skip: "Skip", intro_sound_on: "Sound on", intro_sound_off: "Sound off",
     landing_start: "Get Started",
     nav_go_home: "Back to start",
@@ -653,7 +653,7 @@ export const translations = {
     simulator_title: "In-Game Background Simulator", history_expired: "File expired",
   },
   ja: {
-    app_title: "SpriteCut AI Studio - 超高精度 AI 背景削除",
+    app_title: "RemoveBg AI - 超高精度 AI 背景削除",
     intro_skip: "スキップ", intro_sound_on: "サウンドオン", intro_sound_off: "サウンドオフ",
     landing_start: "はじめる",
     nav_go_home: "最初に戻る",

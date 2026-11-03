@@ -1,6 +1,6 @@
 "use client";
 
-import { DEFAULT_COUNTRY_CODE, type TranslationKey } from "@spritecut/shared";
+import { DEFAULT_COUNTRY_CODE, type TranslationKey } from "@removebg/shared";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";

@@ -1,6 +1,6 @@
 "use client";
 
-import { LOCALE_TOGGLE_LABELS, SUPPORTED_LOCALES } from "@spritecut/shared";
+import { LOCALE_TOGGLE_LABELS, SUPPORTED_LOCALES } from "@removebg/shared";
 import { useLocale } from "@/providers/LocaleProvider";
 
 export function LanguageToggle() {

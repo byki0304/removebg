@@ -1,4 +1,4 @@
-import type { TranslationKey } from "@spritecut/shared";
+import type { TranslationKey } from "@removebg/shared";
 import { History, LayoutGrid, Scissors, Swords, type LucideIcon } from "lucide-react";
 
 export interface NavItem {

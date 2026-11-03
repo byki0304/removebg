@@ -12,11 +12,11 @@ export interface WebServerHandle {
 
 /**
  * Packaged: runs the Next.js standalone server with Electron's own Node runtime.
- * Development: uses SPRITECUT_WEB_URL or the `npm run dev` server on :3000.
+ * Development: uses REMOVEBG_WEB_URL or the `npm run dev` server on :3000.
  */
 export async function startWebServer(engineUrl: string | null): Promise<WebServerHandle> {
   if (!app.isPackaged) {
-    const url = process.env.SPRITECUT_WEB_URL || "http://localhost:3000";
+    const url = process.env.REMOVEBG_WEB_URL || "http://localhost:3000";
     if (!(await waitForHttp(url, 60_000))) {
       throw new Error(`Web dev server not reachable at ${url}. Run "npm run dev" at the repo root first.`);
     }
@@ -32,7 +32,7 @@ export async function startWebServer(engineUrl: string | null): Promise<WebServe
     NODE_ENV: "production",
     PORT: String(port),
     HOSTNAME: "127.0.0.1",
-    SPRITECUT_CLOUD_URL: CLOUD_URL,
+    REMOVEBG_CLOUD_URL: CLOUD_URL,
   };
   delete env.SUPABASE_SERVICE_ROLE_KEY;
   if (engineUrl) env.AI_ENGINE_URL = engineUrl;

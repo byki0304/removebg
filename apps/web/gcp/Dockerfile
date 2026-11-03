@@ -1,8 +1,8 @@
-# SpriteCut AI web (Next.js standalone) for Cloud Run.
+# RemoveBg AI web (Next.js standalone) for Cloud Run.
 # Build from the repo root:
 #   docker build -f apps/web/gcp/Dockerfile \
 #     --build-arg NEXT_PUBLIC_SUPABASE_URL=... --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=... \
-#     --build-arg NEXT_PUBLIC_SITE_URL=https://your-domain -t spritecut-web .
+#     --build-arg NEXT_PUBLIC_SITE_URL=https://your-domain -t removebg-web .
 # Runtime secrets (Cloud Run env / Secret Manager): SUPABASE_SERVICE_ROLE_KEY, AI_ENGINE_URL.
 
 FROM node:22-bookworm-slim AS build
@@ -12,7 +12,7 @@ COPY packages/shared/package.json packages/shared/
 COPY packages/intro-video/package.json packages/intro-video/
 COPY apps/web/package.json apps/web/
 COPY apps/desktop/package.json apps/desktop/
-RUN npm ci --workspace @spritecut/web --include-workspace-root
+RUN npm ci --workspace @removebg/web --include-workspace-root
 COPY packages/shared packages/shared
 COPY apps/web apps/web
 
@@ -25,7 +25,7 @@ ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL \
     NEXT_PUBLIC_UI_PREVIEW=0 \
     NEXT_STANDALONE=1 \
     NEXT_TELEMETRY_DISABLED=1
-RUN npm run build -w @spritecut/web
+RUN npm run build -w @removebg/web
 
 FROM node:22-bookworm-slim AS runtime
 WORKDIR /app

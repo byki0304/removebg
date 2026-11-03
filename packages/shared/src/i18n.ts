@@ -19,8 +19,8 @@ export function isLocale(value: unknown): value is Locale {
 }
 
 const ko = {
-  app_title: "SpriteCut AI Studio - 초고정밀 AI 배경 제거",
-  app_logo: "SpriteCut AI",
+  app_title: "RemoveBg AI - 초고정밀 AI 배경 제거",
+  app_logo: "RemoveBg AI",
   landing_tagline: "게임 에셋을 위한 초고정밀 AI 배경 제거",
   intro_skip: "건너뛰기",
   intro_sound_on: "소리 켜기",
@@ -173,8 +173,8 @@ export type TranslationKey = keyof typeof ko;
 export type Dictionary = Record<TranslationKey, string>;
 
 const en: Dictionary = {
-  app_title: "SpriteCut AI Studio - Precision AI Background Remover",
-  app_logo: "SpriteCut AI",
+  app_title: "RemoveBg AI - Precision AI Background Remover",
+  app_logo: "RemoveBg AI",
   landing_tagline: "Precision AI background removal for game assets",
   intro_skip: "Skip",
   intro_sound_on: "Sound on",
@@ -324,8 +324,8 @@ const en: Dictionary = {
 };
 
 const ja: Dictionary = {
-  app_title: "SpriteCut AI Studio - 超高精度 AI 背景削除",
-  app_logo: "SpriteCut AI",
+  app_title: "RemoveBg AI - 超高精度 AI 背景削除",
+  app_logo: "RemoveBg AI",
   landing_tagline: "ゲームアセットのための超高精度 AI 背景削除",
   intro_skip: "スキップ",
   intro_sound_on: "サウンドオン",

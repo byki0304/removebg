@@ -1,6 +1,6 @@
 "use client";
 
-import type { JobOptions, JobRecord, Profile } from "@spritecut/shared";
+import type { JobOptions, JobRecord, Profile } from "@removebg/shared";
 import { getSupabaseBrowser } from "./supabase/client";
 
 export async function recordJob(profile: Profile | null, fileName: string, options: JobOptions, succeeded: boolean) {

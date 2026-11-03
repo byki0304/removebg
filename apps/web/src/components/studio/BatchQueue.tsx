@@ -1,6 +1,6 @@
 "use client";
 
-import type { TranslationKey } from "@spritecut/shared";
+import type { TranslationKey } from "@removebg/shared";
 import JSZip from "jszip";
 import { CheckCircle2, Download, Loader2, PackageOpen, Swords, Trash2, XCircle } from "lucide-react";
 import Link from "next/link";
@@ -43,7 +43,7 @@ export function BatchQueue({ processing, onStart }: { processing: boolean; onSta
   const downloadZip = async () => {
     const zip = new JSZip();
     completed.forEach((item) => zip.file(resultFileName(item.name, options.outputFormat), item.resultBlob));
-    triggerDownload(await zip.generateAsync({ type: "blob" }), "spritecut_result.zip");
+    triggerDownload(await zip.generateAsync({ type: "blob" }), "removebg_result.zip");
   };
 
   return (

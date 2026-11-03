@@ -1,4 +1,4 @@
-import { isLocale, isValidEmail, isValidPassword, DEFAULT_LOCALE } from "@spritecut/shared";
+import { isLocale, isValidEmail, isValidPassword, DEFAULT_LOCALE } from "@removebg/shared";
 import { apiError, apiOk, isDuplicateUserError } from "@/lib/apiResponse";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 

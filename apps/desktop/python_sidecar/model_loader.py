@@ -10,14 +10,14 @@ from typing import Any
 import numpy as np
 from PIL import Image
 
-MODELS_DIR = Path(os.environ.get("SPRITECUT_MODELS_DIR", Path(__file__).parent / "models"))
+MODELS_DIR = Path(os.environ.get("REMOVEBG_MODELS_DIR", Path(__file__).parent / "models"))
 os.environ.setdefault("U2NET_HOME", str(MODELS_DIR))
 
 # ai_mode → rembg model name. Pixel art / anime sprites segment better with IS-Net Anime.
 MODEL_BY_MODE: dict[str, str] = {
-    "ultra": os.environ.get("SPRITECUT_MODEL_ULTRA", "birefnet-general"),
-    "standard": os.environ.get("SPRITECUT_MODEL_STANDARD", "birefnet-general-lite"),
-    "pixel": os.environ.get("SPRITECUT_MODEL_PIXEL", "isnet-anime"),
+    "ultra": os.environ.get("REMOVEBG_MODEL_ULTRA", "birefnet-general"),
+    "standard": os.environ.get("REMOVEBG_MODEL_STANDARD", "birefnet-general-lite"),
+    "pixel": os.environ.get("REMOVEBG_MODEL_PIXEL", "isnet-anime"),
 }
 
 _sessions: dict[str, Any] = {}

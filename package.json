@@ -1,5 +1,5 @@
 {
-  "name": "removebg-spritecut",
+  "name": "removebgai",
   "private": true,
   "version": "3.0.0",
   "workspaces": [
@@ -7,14 +7,15 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo run dev --filter=@spritecut/web",
+    "dev": "turbo run dev --filter=@removebg/web",
     "build": "turbo run build",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "e2e": "npm run e2e -w @spritecut/web",
-    "render:intro": "npm run render -w @spritecut/intro-video",
-    "desktop": "npm run dev -w @spritecut/desktop",
-    "desktop:dist": "npm run dist -w @spritecut/desktop"
+    "e2e": "npm run e2e -w @removebg/web",
+    "render:intro": "npm run render -w @removebg/intro-video",
+    "icons": "node scripts/generate-icons.mjs",
+    "desktop": "npm run dev -w @removebg/desktop",
+    "desktop:dist": "npm run dist -w @removebg/desktop"
   },
   "devDependencies": {
     "turbo": "^2.5.0",

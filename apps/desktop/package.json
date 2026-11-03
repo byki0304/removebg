@@ -1,10 +1,10 @@
 {
-  "name": "@spritecut/desktop",
-  "productName": "SpriteCut AI",
+  "name": "@removebg/desktop",
+  "productName": "RemoveBg AI",
   "version": "3.0.0",
   "private": true,
-  "description": "SpriteCut AI desktop app (Electron + local Python AI sidecar)",
-  "author": "SpriteCut AI",
+  "description": "RemoveBg AI desktop app (Electron + local Python AI sidecar)",
+  "author": "RemoveBg AI",
   "main": "dist/main/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",

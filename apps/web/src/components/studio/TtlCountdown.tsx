@@ -1,6 +1,6 @@
 "use client";
 
-import { FILE_TTL_HOURS } from "@spritecut/shared";
+import { FILE_TTL_HOURS } from "@removebg/shared";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/providers/LocaleProvider";
 

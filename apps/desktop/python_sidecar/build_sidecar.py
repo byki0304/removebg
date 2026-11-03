@@ -1,4 +1,4 @@
-"""Builds dist/spritecut-sidecar (PyInstaller one-folder) for the Electron bundle.
+"""Builds dist/removebg-sidecar (PyInstaller one-folder) for the Electron bundle.
 
     .venv/Scripts/python -m pip install pyinstaller
     .venv/Scripts/python build_sidecar.py
@@ -11,7 +11,7 @@ import PyInstaller.__main__
 PyInstaller.__main__.run(
     [
         "sidecar_server.py",
-        "--name=spritecut-sidecar",
+        "--name=removebg-sidecar",
         "--onedir",
         "--noconfirm",
         "--clean",

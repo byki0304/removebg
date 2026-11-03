@@ -1,6 +1,6 @@
 "use client";
 
-import type { JobOptions } from "@spritecut/shared";
+import type { JobOptions } from "@removebg/shared";
 import { create } from "zustand";
 
 export type QueueStatus = "queued" | "processing" | "completed" | "failed";

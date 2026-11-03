@@ -24,3 +24,4 @@ apps/desktop/release/
 packages/intro-video/out/
 
 *.tsbuildinfo
+apps/desktop/python_sidecar/*.spec

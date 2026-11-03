@@ -1,4 +1,4 @@
--- SpriteCut AI Studio: profiles, jobs, RLS, 72-hour TTL cleanup
+-- RemoveBg AI: profiles, jobs, RLS, 72-hour TTL cleanup
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "pg_cron";
 

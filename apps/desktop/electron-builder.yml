@@ -1,5 +1,7 @@
-appId: ai.spritecut.desktop
-productName: SpriteCut AI
+appId: ai.removebg.desktop
+productName: RemoveBg AI
+# Icons are generated into the repo-level assets/icons folder by `npm run icons`.
+icon: ../../assets/icons/desktop/linux/1024x1024.png
 electronVersion: 45.2.1
 directories:
   output: release
@@ -8,16 +10,27 @@ files:
   - package.json
 afterPack: scripts/after-pack.cjs
 extraResources:
-  - from: python_sidecar/dist/spritecut-sidecar
+  - from: python_sidecar/dist/removebg-sidecar
     to: sidecar
     filter: ["**/*"]
+  - from: ../../assets/icons/desktop/linux/512x512.png
+    to: icons/app.png
 protocols:
-  - name: SpriteCut AI
-    schemes: [spritecut]
+  - name: RemoveBg AI
+    schemes: [removebgai]
 win:
   target: nsis
+  icon: ../../assets/icons/desktop/windows/icon.ico
+nsis:
+  installerIcon: ../../assets/icons/desktop/windows/icon.ico
+  uninstallerIcon: ../../assets/icons/desktop/windows/icon.ico
+  installerHeaderIcon: ../../assets/icons/desktop/windows/icon.ico
 mac:
   target: dmg
   category: public.app-category.graphics-design
+  icon: ../../assets/icons/desktop/mac/icon.icns
+dmg:
+  icon: ../../assets/icons/desktop/mac/icon.icns
 linux:
   target: AppImage
+  icon: ../../assets/icons/desktop/linux

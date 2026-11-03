@@ -10,7 +10,7 @@ export const isUiPreview = process.env.NEXT_PUBLIC_UI_PREVIEW === "1";
  * delegated to the hosted web deployment at this URL.
  */
 export function cloudDelegateUrl(): string | null {
-  const url = process.env.SPRITECUT_CLOUD_URL;
+  const url = process.env.REMOVEBG_CLOUD_URL;
   return url && !process.env.SUPABASE_SERVICE_ROLE_KEY ? url.replace(/\/$/, "") : null;
 }
 

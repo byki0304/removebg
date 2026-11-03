@@ -1,6 +1,6 @@
 "use client";
 
-import { DEFAULT_COUNTRY_CODE, type TranslationKey } from "@spritecut/shared";
+import { DEFAULT_COUNTRY_CODE, type TranslationKey } from "@removebg/shared";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { AuthScreen } from "@/components/auth/AuthScreen";

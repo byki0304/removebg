@@ -5,8 +5,10 @@ import { AppProviders } from "@/providers/AppProviders";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SpriteCut AI Studio",
+  title: "RemoveBg AI",
   description: "Precision AI background removal for game assets",
+  applicationName: "RemoveBg AI",
+  appleWebApp: { capable: true, title: "RemoveBg AI", statusBarStyle: "black-translucent" },
 };
 
 export const viewport: Viewport = {

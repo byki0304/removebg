@@ -1,6 +1,6 @@
 "use client";
 
-import { LOCALE_PILL_LABELS, type AccountType, type TranslationKey } from "@spritecut/shared";
+import { LOCALE_PILL_LABELS, type AccountType, type TranslationKey } from "@removebg/shared";
 import { CheckCircle2, KeyRound } from "lucide-react";
 import Link from "next/link";
 import { useState, type FormEvent, type ReactNode } from "react";

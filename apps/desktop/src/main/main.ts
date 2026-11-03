@@ -6,7 +6,7 @@ import { installFileLog } from "./fileLog";
 import { launchSidecar, type SidecarHandle } from "./sidecarLauncher";
 import { startWebServer, type WebServerHandle } from "./webServer";
 
-const isSmokeTest = process.env.SPRITECUT_SMOKE === "1";
+const isSmokeTest = process.env.REMOVEBG_SMOKE === "1";
 
 let mainWindow: BrowserWindow | null = null;
 let webServer: WebServerHandle | null = null;
@@ -28,6 +28,12 @@ function openDeepLink(deepLink: string): void {
   mainWindow.focus();
 }
 
+function windowIconPath(): string {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, "icons", "app.png")
+    : path.join(__dirname, "..", "..", "..", "..", "assets", "icons", "desktop", "linux", "512x512.png");
+}
+
 function createWindow(url: string): BrowserWindow {
   const win = new BrowserWindow({
     width: 1280,
@@ -35,7 +41,8 @@ function createWindow(url: string): BrowserWindow {
     minWidth: 360,
     minHeight: 560,
     backgroundColor: "#0B0C10",
-    title: "SpriteCut AI",
+    title: "RemoveBg AI",
+    icon: windowIconPath(),
     autoHideMenuBar: true,
     show: !isSmokeTest,
     webPreferences: {
@@ -60,7 +67,7 @@ function createWindow(url: string): BrowserWindow {
   if (isSmokeTest) {
     win.webContents.once("did-finish-load", async () => {
       await new Promise((r) => setTimeout(r, 1500));
-      const location = await win.webContents.executeJavaScript("location.pathname + ' | ' + document.title + ' | bridge=' + Boolean(window.spritecutDesktop)");
+      const location = await win.webContents.executeJavaScript("location.pathname + ' | ' + document.title + ' | bridge=' + Boolean(window.removebgDesktop)");
       console.log(`[smoke] loaded ${location}`);
       app.quit();
     });
@@ -70,7 +77,7 @@ function createWindow(url: string): BrowserWindow {
   return win;
 }
 
-ipcMain.handle("spritecut:open-external", async (_event, url: unknown) => {
+ipcMain.handle("removebg:open-external", async (_event, url: unknown) => {
   if (typeof url !== "string" || !url.startsWith("https://")) throw new Error("Only https URLs can be opened.");
   await shell.openExternal(url);
 });
@@ -80,7 +87,7 @@ async function bootstrap(): Promise<void> {
   try {
     webServer = await startWebServer(sidecar?.url ?? null);
   } catch (error) {
-    dialog.showErrorBox("SpriteCut AI", error instanceof Error ? error.message : String(error));
+    dialog.showErrorBox("RemoveBg AI", error instanceof Error ? error.message : String(error));
     app.quit();
     return;
   }

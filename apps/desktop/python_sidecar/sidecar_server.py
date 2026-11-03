@@ -1,4 +1,4 @@
-"""SpriteCut AI Engine — local FastAPI sidecar (Electron) and Cloud Run GPU service (web)."""
+"""RemoveBg AI Engine — local FastAPI sidecar (Electron) and Cloud Run GPU service (web)."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ import pipeline
 
 MAX_UPLOAD_BYTES = 60 * 1024 * 1024
 
-app = FastAPI(title="SpriteCut AI Engine")
+app = FastAPI(title="RemoveBg AI Engine")
 
 
 @app.get("/health")
@@ -67,7 +67,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     if args.preload:
-        threading.Thread(target=_preload, args=(os.environ.get("SPRITECUT_PRELOAD_MODE", "ultra"),), daemon=True).start()
+        threading.Thread(target=_preload, args=(os.environ.get("REMOVEBG_PRELOAD_MODE", "ultra"),), daemon=True).start()
 
     import uvicorn
 

@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { HomeButton } from "@/components/layout/HomeButton";
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
-import { useLocale } from "@/providers/LocaleProvider";
 
 interface AuthScreenProps {
   title: string;
@@ -15,11 +15,10 @@ interface AuthScreenProps {
 
 /** Shared frame for login / signup / guest screens: language toggle top-right, glass card with HomeButton inside. */
 export function AuthScreen({ title, subtitle, children, testId }: AuthScreenProps) {
-  const { t } = useLocale();
   return (
     <div className="app-backdrop flex min-h-dvh flex-col px-4 safe-top safe-bottom">
       <div className="flex h-16 shrink-0 items-center justify-between mlandscape:h-12">
-        <span className="text-[17px] font-extrabold neon-text mlandscape:text-[15px]">{t("app_logo")}</span>
+        <BrandLogo size="sm" />
         <LanguageToggle />
       </div>
 

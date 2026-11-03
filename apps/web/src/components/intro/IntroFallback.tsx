@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { LogoMark } from "@/components/brand/BrandLogo";
 
 const TOTAL = 6;
 const at = (seconds: number) => seconds / TOTAL;
@@ -131,6 +132,13 @@ export function IntroFallback() {
       {/* 4.0-5.5s logo glitch */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
         <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0, 1, 1, 0], scale: [1.2, 1.2, 1, 1, 1] }}
+          transition={{ duration: TOTAL, times: [0, at(4.0), at(4.3), at(5.5), at(5.95)] }}
+        >
+          <LogoMark className="h-[clamp(56px,14vmin,128px)] w-[clamp(56px,14vmin,128px)]" />
+        </motion.div>
+        <motion.div
           className="relative"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 0, 1, 1, 0], scale: [1.2, 1.2, 1, 1, 1] }}
@@ -141,16 +149,16 @@ export function IntroFallback() {
             animate={{ x: [0, -6, 4, -2, 0, 0], opacity: [0, 0.9, 0.6, 0.9, 0, 0] }}
             transition={{ duration: TOTAL, times: [0, at(4.05), at(4.2), at(4.35), at(4.5), 1] }}
           >
-            SpriteCut AI
+            RemoveBg AI
           </motion.span>
           <motion.span
             className="absolute inset-0 text-[clamp(40px,9vmin,96px)] font-black tracking-tight text-neon-cyan mix-blend-screen"
             animate={{ x: [0, 6, -4, 2, 0, 0], opacity: [0, 0.9, 0.6, 0.9, 0, 0] }}
             transition={{ duration: TOTAL, times: [0, at(4.05), at(4.2), at(4.35), at(4.5), 1] }}
           >
-            SpriteCut AI
+            RemoveBg AI
           </motion.span>
-          <span className="relative text-[clamp(40px,9vmin,96px)] font-black tracking-tight neon-text">SpriteCut AI</span>
+          <span className="relative text-[clamp(40px,9vmin,96px)] font-black tracking-tight neon-text">RemoveBg AI</span>
         </motion.div>
         <motion.p
           className="text-[clamp(13px,2.2vmin,20px)] font-medium tracking-[0.25em] text-ink-dim uppercase"

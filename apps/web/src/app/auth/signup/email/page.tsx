@@ -1,6 +1,6 @@
 "use client";
 
-import type { TranslationKey } from "@spritecut/shared";
+import type { TranslationKey } from "@removebg/shared";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { AuthScreen } from "@/components/auth/AuthScreen";

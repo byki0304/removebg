@@ -6,7 +6,7 @@ import {
   translate,
   type Locale,
   type TranslationKey,
-} from "@spritecut/shared";
+} from "@removebg/shared";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { isMemberProfile, useSession } from "./SessionProvider";

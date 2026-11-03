@@ -1,6 +1,6 @@
 "use client";
 
-import type { TranslationKey } from "@spritecut/shared";
+import type { TranslationKey } from "@removebg/shared";
 import { Download, Eraser, ImagePlus, Paintbrush, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BrushCanvas, type BrushCanvasHandle, type BrushMode } from "@/components/studio/BrushCanvas";

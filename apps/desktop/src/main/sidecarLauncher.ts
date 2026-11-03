@@ -19,13 +19,13 @@ interface LaunchCommand {
 
 /**
  * Packaged: PyInstaller build in resources/sidecar. Development: the venv in python_sidecar/.venv
- * (override with SPRITECUT_PYTHON). Returns null when no Python runtime is available — the web
+ * (override with REMOVEBG_PYTHON). Returns null when no Python runtime is available — the web
  * server then uses its built-in basic engine.
  */
 function resolveCommand(port: number): LaunchCommand | null {
   const portArgs = ["--host", "127.0.0.1", "--port", String(port), "--preload"];
   if (app.isPackaged) {
-    const exe = resourcePath("sidecar", process.platform === "win32" ? "spritecut-sidecar.exe" : "spritecut-sidecar");
+    const exe = resourcePath("sidecar", process.platform === "win32" ? "removebg-sidecar.exe" : "removebg-sidecar");
     return fs.existsSync(exe) ? { command: exe, args: portArgs, cwd: path.dirname(exe) } : null;
   }
   const sidecarDir = resourcePath("python_sidecar");
@@ -33,13 +33,13 @@ function resolveCommand(port: number): LaunchCommand | null {
     process.platform === "win32"
       ? path.join(sidecarDir, ".venv", "Scripts", "python.exe")
       : path.join(sidecarDir, ".venv", "bin", "python");
-  const python = process.env.SPRITECUT_PYTHON || (fs.existsSync(venvPython) ? venvPython : null);
+  const python = process.env.REMOVEBG_PYTHON || (fs.existsSync(venvPython) ? venvPython : null);
   return python ? { command: python, args: ["sidecar_server.py", ...portArgs], cwd: sidecarDir } : null;
 }
 
 export async function launchSidecar(): Promise<SidecarHandle | null> {
-  if (process.env.SPRITECUT_ENGINE_URL) {
-    return { url: process.env.SPRITECUT_ENGINE_URL, process: null, stop: () => undefined };
+  if (process.env.REMOVEBG_ENGINE_URL) {
+    return { url: process.env.REMOVEBG_ENGINE_URL, process: null, stop: () => undefined };
   }
   const port = await pickPort(DEFAULT_ENGINE_PORT);
   const cmd = resolveCommand(port);
@@ -49,7 +49,7 @@ export async function launchSidecar(): Promise<SidecarHandle | null> {
   }
   const child = spawnLogged("sidecar", cmd.command, cmd.args, {
     cwd: cmd.cwd,
-    env: { ...process.env, SPRITECUT_MODELS_DIR: path.join(app.getPath("userData"), "models") },
+    env: { ...process.env, REMOVEBG_MODELS_DIR: path.join(app.getPath("userData"), "models") },
   });
   return { url: `http://127.0.0.1:${port}`, process: child, stop: () => killTree(child) };
 }

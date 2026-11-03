@@ -1,4 +1,4 @@
-import type { TranslationKey } from "@spritecut/shared";
+import type { TranslationKey } from "@removebg/shared";
 import { NextResponse } from "next/server";
 
 export function apiError(status: number, errorKey: TranslationKey) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { NICKNAME_MAX_LENGTH, type TranslationKey } from "@spritecut/shared";
+import { NICKNAME_MAX_LENGTH, type TranslationKey } from "@removebg/shared";
 import { Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";

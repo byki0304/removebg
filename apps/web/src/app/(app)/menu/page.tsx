@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { History, Scissors, Swords, UserRound, type LucideIcon } from "lucide-react";
 import Link from "next/link";
-import type { TranslationKey } from "@spritecut/shared";
+import type { TranslationKey } from "@removebg/shared";
 import { profileLoginId } from "@/lib/displayName";
 import { useLocale } from "@/providers/LocaleProvider";
 import { useSession } from "@/providers/SessionProvider";

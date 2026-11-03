@@ -1,4 +1,4 @@
-﻿# SpriteCut AI (removebg)
+﻿# RemoveBg AI (removebg)
 
 게임 스프라이트용 초정밀 배경 제거 앱. 사양서: `06_Cursor_Project_Master_Prompt_final_removebg.md`
 
@@ -26,7 +26,7 @@ npm run dev                                       # http://localhost:3000
    - **Phone provider 사용 안 함** (SMS 인증 없음 — 휴대폰번호는 ID+비밀번호 로그인)
    - **Anonymous sign-ins: Enabled** (게스트)
    - Google provider Enabled
-   - URL Configuration > Redirect URLs: `https://<도메인>/auth/callback`, `http://localhost:3000/auth/callback`, `spritecut://auth/callback`
+   - URL Configuration > Redirect URLs: `https://<도메인>/auth/callback`, `http://localhost:3000/auth/callback`, `removebgai://auth/callback`
 3. `apps/web/.env.local` 에 키 입력: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`(서버 전용), `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_UI_PREVIEW=0`
 
 게스트 데이터는 pg_cron이 72시간 후 자동 삭제하고, 이메일·휴대폰·Google 회원 데이터는 영구 보관됩니다.
@@ -57,11 +57,11 @@ npm run desktop        # 터미널 2: Electron (sidecar 자동 실행)
 
 ```powershell
 cd apps\desktop\python_sidecar; .\.venv\Scripts\python -m pip install pyinstaller; .\.venv\Scripts\python build_sidecar.py; cd ..\..\..
-$env:SPRITECUT_CLOUD_URL="https://<배포된 웹 도메인>"
+$env:REMOVEBG_CLOUD_URL="https://<배포된 웹 도메인>"
 npm run desktop:dist   # apps/desktop/release/
 ```
 
-데스크톱 번들에는 Service Role Key가 들어가지 않습니다. 관리자 권한이 필요한 가입/게스트 처리는 `SPRITECUT_CLOUD_URL`(배포된 웹)로 위임되고, Google 로그인은 시스템 브라우저 → `spritecut://` 딥링크로 돌아옵니다. 로그: `%APPDATA%\SpriteCut AI\logs\main.log`.
+데스크톱 번들에는 Service Role Key가 들어가지 않습니다. 관리자 권한이 필요한 가입/게스트 처리는 `REMOVEBG_CLOUD_URL`(배포된 웹)로 위임되고, Google 로그인은 시스템 브라우저 → `removebgai://` 딥링크로 돌아옵니다. 로그: `%APPDATA%\RemoveBg AI\logs\main.log`.
 
 ## 5. 인트로 영상
 
@@ -82,5 +82,5 @@ npm run e2e            # Playwright: 흐름 + 10개 해상도 × 11개 화면 ×
 ## 7. GCP 배포
 
 - 웹: `docker build -f apps/web/gcp/Dockerfile --build-arg NEXT_PUBLIC_SUPABASE_URL=... --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=... --build-arg NEXT_PUBLIC_SITE_URL=... .` → Cloud Run (런타임 env: `SUPABASE_SERVICE_ROLE_KEY`, `AI_ENGINE_URL`)
-- AI 엔진: `docker build -t spritecut-engine apps/desktop/python_sidecar` → Cloud Run GPU (L4/T4)
+- AI 엔진: `docker build -t removebg-engine apps/desktop/python_sidecar` → Cloud Run GPU (L4/T4)
 - GCS 버킷 수명주기: `apps/web/gcp/lifecycle.json` (3일 후 삭제)

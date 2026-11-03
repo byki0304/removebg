@@ -1,6 +1,6 @@
 import "server-only";
-import type { JobOptions } from "@spritecut/shared";
-import { MAX_DIMENSION } from "@spritecut/shared";
+import type { JobOptions } from "@removebg/shared";
+import { MAX_DIMENSION } from "@removebg/shared";
 import sharp from "sharp";
 import { basicBackgroundMatting, estimateBorderColor, hasMeaningfulTransparency } from "./basicMatting";
 import { countGifFrames, isGifBuffer } from "./gifInfo";

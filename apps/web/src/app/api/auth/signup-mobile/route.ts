@@ -4,7 +4,7 @@ import {
   isValidPassword,
   mobileToAuthEmail,
   tryNormalizeMobile,
-} from "@spritecut/shared";
+} from "@removebg/shared";
 import { apiError, apiOk, isDuplicateUserError } from "@/lib/apiResponse";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 

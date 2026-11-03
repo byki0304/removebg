@@ -1,4 +1,4 @@
-import { isAcceptedFileName, maxBytesFor, type JobOptions } from "@spritecut/shared";
+import { isAcceptedFileName, maxBytesFor, type JobOptions } from "@removebg/shared";
 import { NextResponse } from "next/server";
 import { apiError } from "@/lib/apiResponse";
 import { processImage } from "@/lib/imagePipeline/processImage";

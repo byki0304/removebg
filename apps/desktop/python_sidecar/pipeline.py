@@ -1,4 +1,4 @@
-"""Model-agnostic post-processing steps of the SpriteCut pipeline (numpy only)."""
+"""Model-agnostic post-processing steps of the RemoveBg pipeline (numpy only)."""
 
 from __future__ import annotations
 

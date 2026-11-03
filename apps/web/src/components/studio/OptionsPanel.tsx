@@ -1,6 +1,6 @@
 "use client";
 
-import type { JobOptions, TranslationKey } from "@spritecut/shared";
+import type { JobOptions, TranslationKey } from "@removebg/shared";
 import { useLocale } from "@/providers/LocaleProvider";
 import { useStudioStore } from "@/store/studioStore";
 

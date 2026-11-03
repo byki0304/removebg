@@ -1,11 +1,11 @@
-# SpriteCut AI engine on Cloud Run GPU (NVIDIA L4/T4).
-#   docker build -t spritecut-engine apps/desktop/python_sidecar
-#   gcloud run deploy spritecut-engine --image ... --gpu 1 --gpu-type nvidia-l4 --cpu 4 --memory 16Gi --no-allow-unauthenticated
+# RemoveBg AI engine on Cloud Run GPU (NVIDIA L4/T4).
+#   docker build -t removebg-engine apps/desktop/python_sidecar
+#   gcloud run deploy removebg-engine --image ... --gpu 1 --gpu-type nvidia-l4 --cpu 4 --memory 16Gi --no-allow-unauthenticated
 # Point the web service's AI_ENGINE_URL at this service.
 
 FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
 ENV DEBIAN_FRONTEND=noninteractive PYTHONUNBUFFERED=1 \
-    SPRITECUT_MODELS_DIR=/models U2NET_HOME=/models
+    REMOVEBG_MODELS_DIR=/models U2NET_HOME=/models
 RUN apt-get update && apt-get install -y --no-install-recommends python3.11 python3.11-venv python3-pip libgl1 libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/* \
     && python3.11 -m venv /venv

@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { AbsoluteFill, Audio, Easing, interpolate, random, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Easing, Img, interpolate, random, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 
 export const INTRO_FPS = 30;
 export const INTRO_FRAMES = 6 * INTRO_FPS;
@@ -230,6 +230,10 @@ export function IntroComposition() {
       </AbsoluteFill>
 
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 2 * vmin }}>
+        <Img
+          src={staticFile("logo-mark.svg")}
+          style={{ width: 16 * vmin, height: 16 * vmin, opacity: logoOpacity, transform: `scale(${logoScale})` }}
+        />
         <div style={{ position: "relative", opacity: logoOpacity, transform: `scale(${logoScale})` }}>
           <span
             style={{
@@ -243,7 +247,7 @@ export function IntroComposition() {
               opacity: glitchActive ? 0.9 : 0,
             }}
           >
-            SpriteCut AI
+            RemoveBg AI
           </span>
           <span
             style={{
@@ -256,7 +260,7 @@ export function IntroComposition() {
               opacity: glitchActive ? 0.9 : 0,
             }}
           >
-            SpriteCut AI
+            RemoveBg AI
           </span>
           <span
             style={{
@@ -269,7 +273,7 @@ export function IntroComposition() {
               filter: `drop-shadow(0 0 ${1.6 * vmin}px ${COLORS.cyan}80)`,
             }}
           >
-            SpriteCut AI
+            RemoveBg AI
           </span>
         </div>
         <div

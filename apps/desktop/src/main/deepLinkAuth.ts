@@ -15,7 +15,7 @@ export function findDeepLink(argv: readonly string[]): string | null {
 }
 
 /**
- * `spritecut://auth/callback?code=…` → the local web server's OAuth callback. Only the
+ * `removebgai://auth/callback?code=…` → the local web server's OAuth callback. Only the
  * authorization code is forwarded; the PKCE verifier lives in this app's cookie jar.
  */
 export function deepLinkToCallbackUrl(deepLink: string, webUrl: string): string | null {
