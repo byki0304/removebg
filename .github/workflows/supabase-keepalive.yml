@@ -1,0 +1,30 @@
+name: Supabase keep-alive (backup)
+
+# Backup for the Vercel Cron in apps/web/vercel.json (18:00 UTC = 03:00 KST).
+# Runs at 18:40 UTC (03:40 KST); the endpoint only writes when the DB was idle for 24h, so double runs are harmless.
+on:
+  schedule:
+    - cron: "40 18 * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call keep-alive endpoint
+        env:
+          KEEPALIVE_URL: ${{ vars.KEEPALIVE_URL || 'https://web-two-olive-80.vercel.app/api/cron/keepalive' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          for attempt in 1 2 3; do
+            if [ -n "$CRON_SECRET" ]; then
+              status=$(curl -sS -o body.json -w '%{http_code}' -H "Authorization: Bearer $CRON_SECRET" "$KEEPALIVE_URL") || status=000
+            else
+              status=$(curl -sS -o body.json -w '%{http_code}' "$KEEPALIVE_URL") || status=000
+            fi
+            cat body.json 2>/dev/null; echo
+            [ "$status" = "200" ] && exit 0
+            echo "attempt $attempt failed with HTTP $status"; sleep 30
+          done
+          exit 1
