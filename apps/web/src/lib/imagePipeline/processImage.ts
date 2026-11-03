@@ -39,7 +39,8 @@ export interface ProcessLimits {
   maxOutputBytes?: number;
 }
 
-const AI_ENGINE_TIMEOUT_MS = 90_000;
+// A scaled-to-zero CPU engine needs time to boot and load the model on the first request.
+const AI_ENGINE_TIMEOUT_MS = 170_000;
 const MAX_DOWNSCALE_ATTEMPTS = 6;
 
 async function decodeRgba(input: Buffer): Promise<RgbaImage> {
@@ -52,30 +53,50 @@ async function decodeRgba(input: Buffer): Promise<RgbaImage> {
   return { data: new Uint8Array(data.buffer, data.byteOffset, data.byteLength), width: info.width, height: info.height };
 }
 
-async function encodePng(image: RgbaImage): Promise<Buffer> {
-  return sharp(Buffer.from(image.data), { raw: { width: image.width, height: image.height, channels: 4 } })
-    .png()
-    .toBuffer();
+/**
+ * The engine only predicts the alpha mask, so opaque photos travel as a compact JPEG (a 12 MP PNG would
+ * approach Cloud Run's 32 MiB request cap). Sources with real transparency stay lossless PNG.
+ */
+async function encodeEngineInput(image: RgbaImage): Promise<{ bytes: Buffer; type: string; name: string }> {
+  const pipeline = sharp(Buffer.from(image.data), { raw: { width: image.width, height: image.height, channels: 4 } });
+  if (hasMeaningfulTransparency(image)) return { bytes: await pipeline.png().toBuffer(), type: "image/png", name: "input.png" };
+  return { bytes: await pipeline.removeAlpha().jpeg({ quality: 92 }).toBuffer(), type: "image/jpeg", name: "input.jpg" };
 }
 
-async function requestAiEngine(png: Buffer, options: JobOptions): Promise<RgbaImage | null> {
+/** Returns the engine's alpha mask at the source's exact size, or null when the engine is unavailable. */
+async function requestAiMask(source: RgbaImage, options: JobOptions): Promise<Uint8Array | null> {
   const engineUrl = process.env.AI_ENGINE_URL;
   if (!engineUrl) return null;
+  const input = await encodeEngineInput(source);
   const form = new FormData();
-  form.append("file", new Blob([new Uint8Array(png)], { type: "image/png" }), "input.png");
-  form.append("apply_defringing", String(options.defringing));
+  form.append("file", new Blob([new Uint8Array(input.bytes)], { type: input.type }), input.name);
+  form.append("apply_defringing", "false");
   form.append("ai_mode", options.aiMode);
   try {
+    const token = process.env.AI_ENGINE_TOKEN;
     const res = await fetch(`${engineUrl.replace(/\/$/, "")}/remove-bg`, {
       method: "POST",
       body: form,
+      headers: token ? { "X-Engine-Token": token } : undefined,
       signal: AbortSignal.timeout(AI_ENGINE_TIMEOUT_MS),
     });
     if (!res.ok) return null;
-    return decodeRgba(Buffer.from(await res.arrayBuffer()));
+    const { data } = await sharp(Buffer.from(await res.arrayBuffer()))
+      .ensureAlpha()
+      .resize(source.width, source.height, { fit: "fill" })
+      .extractChannel(3)
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    return new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
   } catch {
     return null;
   }
+}
+
+function applyMask(source: RgbaImage, mask: Uint8Array): RgbaImage {
+  const data = new Uint8Array(source.data);
+  for (let p = 0; p < mask.length; p++) data[p * 4 + 3] = Math.min(data[p * 4 + 3], mask[p]);
+  return { data, width: source.width, height: source.height };
 }
 
 function encodeOutput(image: RgbaImage, options: JobOptions, size?: { width: number; height: number }): Promise<Buffer> {
@@ -91,9 +112,13 @@ export async function processImage(input: Buffer, options: JobOptions, limits: P
   const source = await decodeRgba(input);
 
   let engine: EngineName = "ai";
-  let image = await requestAiEngine(await encodePng(source), options);
+  let image: RgbaImage;
+  const mask = await requestAiMask(source, options);
 
-  if (!image) {
+  if (mask) {
+    image = applyMask(source, mask);
+    if (options.defringing && options.aiMode !== "pixel") decontaminateColors(image, estimateBorderColor(source));
+  } else {
     engine = "basic";
     image = source;
     if (!hasMeaningfulTransparency(image)) {

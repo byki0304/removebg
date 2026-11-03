@@ -82,3 +82,11 @@ def test_missing_model_returns_503(monkeypatch):
     monkeypatch.setattr(model_loader, "predict_alpha", unavailable)
     res = TestClient(sidecar_server.app).post("/remove-bg", files={"file": ("a.png", _png(_sprite()[0]), "image/png")})
     assert res.status_code == 503
+
+
+def test_engine_token_is_required_when_configured(client, monkeypatch):
+    monkeypatch.setattr(sidecar_server, "ENGINE_TOKEN", "s3cret")
+    files = {"file": ("a.png", _png(_sprite()[0]), "image/png")}
+    assert client.post("/remove-bg", files=files).status_code == 401
+    assert client.post("/remove-bg", files=files, headers={"X-Engine-Token": "wrong"}).status_code == 401
+    assert client.post("/remove-bg", files=files, headers={"X-Engine-Token": "s3cret"}).status_code == 200

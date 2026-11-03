@@ -1,0 +1,19 @@
+# RemoveBg AI engine on Cloud Run, CPU only (no GPU quota needed). Built by cloudbuild.cpu.yaml:
+#   gcloud builds submit apps/desktop/python_sidecar --config apps/desktop/python_sidecar/cloudbuild.cpu.yaml
+# Deploy with ENGINE_TOKEN set, and point the web app's AI_ENGINE_URL / AI_ENGINE_TOKEN at it.
+
+FROM python:3.11-slim
+# OMP_NUM_THREADS must match the Cloud Run --cpu value: ONNX Runtime otherwise sizes its thread pool from
+# the host's cores and inference becomes ~4x slower. One resident model keeps memory within 16 GiB.
+ENV PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 \
+    REMOVEBG_MODELS_DIR=/models U2NET_HOME=/models \
+    OMP_NUM_THREADS=4 REMOVEBG_MAX_SESSIONS=1
+RUN apt-get update && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt "onnxruntime==1.20.*"
+COPY sidecar_server.py model_loader.py pipeline.py ./
+# Bake the models into the image so cold starts do not download ~1.4 GB.
+RUN python -c "from rembg import new_session; [new_session(m) for m in ('birefnet-general','birefnet-general-lite','isnet-anime')]"
+EXPOSE 8080
+CMD ["python", "sidecar_server.py", "--host", "0.0.0.0", "--port", "8080", "--preload"]

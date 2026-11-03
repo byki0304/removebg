@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import hmac
 import os
 import threading
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
 
@@ -14,6 +15,8 @@ import model_loader
 import pipeline
 
 MAX_UPLOAD_BYTES = 60 * 1024 * 1024
+# Public deployments (Cloud Run) set ENGINE_TOKEN; callers must send it as X-Engine-Token.
+ENGINE_TOKEN = os.environ.get("ENGINE_TOKEN", "")
 
 app = FastAPI(title="RemoveBg AI Engine")
 
@@ -34,7 +37,10 @@ async def remove_background(
     file: UploadFile = File(...),
     apply_defringing: bool = Form(True),
     ai_mode: str = Form("ultra"),
+    x_engine_token: str = Header(""),
 ) -> Response:
+    if ENGINE_TOKEN and not hmac.compare_digest(x_engine_token, ENGINE_TOKEN):
+        raise HTTPException(status_code=401, detail="invalid engine token")
     data = await file.read()
     if not data or len(data) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="file too large or empty")

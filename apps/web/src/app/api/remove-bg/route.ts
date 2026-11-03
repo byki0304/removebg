@@ -4,7 +4,7 @@ import { apiError } from "@/lib/apiResponse";
 import { OutputTooLargeError, processImage } from "@/lib/imagePipeline/processImage";
 
 export const runtime = "nodejs";
-export const maxDuration = 120;
+export const maxDuration = 200;
 
 function parseOptions(raw: FormDataEntryValue | null): JobOptions {
   const fallback: JobOptions = { autoTrim: true, padding: 2, defringing: true, outputFormat: "png", aiMode: "ultra" };

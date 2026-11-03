@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gc
 import os
 import threading
 from pathlib import Path
@@ -22,6 +23,8 @@ MODEL_BY_MODE: dict[str, str] = {
 
 _sessions: dict[str, Any] = {}
 _lock = threading.Lock()
+# Memory-bound hosts (Cloud Run CPU) keep a single model resident; 0 = no limit (desktop).
+MAX_SESSIONS = int(os.environ.get("REMOVEBG_MAX_SESSIONS", "0"))
 
 
 class ModelUnavailableError(RuntimeError):
@@ -46,6 +49,9 @@ def get_session(mode: str) -> Any:
                 from rembg import new_session
             except ImportError as exc:
                 raise ModelUnavailableError("rembg is not installed") from exc
+            if MAX_SESSIONS and len(_sessions) >= MAX_SESSIONS:
+                _sessions.clear()
+                gc.collect()
             MODELS_DIR.mkdir(parents=True, exist_ok=True)
             _sessions[model_name] = new_session(model_name, providers=_providers())
         return _sessions[model_name]
